@@ -26,6 +26,14 @@ def fechaahora():
     ss = ahora.second
     fech = str(mm)+'/'+str(dd)+'/'+str(YY)+' '+str(hh)+':'+str(m)+':'+str(ss)
     return fech
+
+def fechainicio(idconsul, cursor):
+    sqlf="SELECT MAX(FECHAF) FROM SCR_ANUNCIANTES WHERE ID_CONSULTA=?"
+    valor=[idconsul]
+    cursor.execute(sqlf, valor)
+    resulf= cursor.fetchone()
+    fechf = resulf[0]
+    return fechf
 #crear browser
 br = mechanize.Browser()
 
@@ -54,8 +62,9 @@ sqlcmd = ("SELECT * FROM SCR_CONSULTAS WHERE ID_PORTAL = 2 AND ESTADO = 1")
 cursor.execute(sqlcmd)
 resultado = cursor.fetchall()
 for c in resultado:
+    
     idconsulta = c[0]
-    fecha_prog= c[12]
+    fecha_fincon= c[11]
     #print idconsulta
     #print fecha_prog
     maxpage = c[13]
@@ -69,19 +78,19 @@ for c in resultado:
     cursor.commit()
 
     #obtener la fecha del dia
-    Fecha = date.today()
+    fecha = date.today()
 
-    if fecha_prog is None:
-        fecha_prog='0000-00-00'
+    if fecha_fincon is None:
+        fecha_fincon='0000-00-00'
     else:
-        dias = fecha_prog.date() - datetime.now().date()
+        dias = fecha_fincon.date() - datetime.now().date()
         #print dias
     #print fecha_prog
-    F =str(fecha_prog).split(" ")
+    F =str(fecha_fincon).split(" ")
     #print F[0]
     #print Fecha
     #verificar la fecha programada
-    if str(F[0]) == str(Fecha) or fecha_prog == '0000-00-00':    
+    if str(F[0]) != str(fecha):    
     
         #Llenar los campos de busqueda
         #print c[5]
@@ -92,26 +101,39 @@ for c in resultado:
 
         #str(result[3])
         #ss='Denia'
-        print "Destino/Nombre Alojamiento: " + ss
-
-        print "Fecha de Check-in: %s" % Fecha
-        Fechadiv =str(Fecha).split("-")
+        fecha_inicio = fechainicio(idconsulta,cursor)
+        #print fecha_inicio
+        #print fecha
+        if fecha_inicio is None:
+            Fechadiv =str(fecha).split("-")
+            #print Fechadiv
+        else:
+            Fech =str(fecha_inicio).split(" ")
+            fecha = Fech[0]
+            #print "fech %s" %fecha
+            fecha = fecha_inicio.date()
+            Fechadiv = str(Fech[0]).split("-")
+            #print "fech %s" %fecha
         checkin_monthday=Fechadiv[2]
+        #print checkin_monthday
         checkin_month=Fechadiv[1]
         checkin_year=Fechadiv[0]
-        Fechasal = date.today()+ timedelta(days=c[10])
-        print "Fecha de Check-out: %s" % Fechasal
+        Fechasal = fecha + timedelta(days=c[10])
         Fechadiv2 =str(Fechasal).split("-")
         checkout_monthday=Fechadiv2[2]
         checkout_month=Fechadiv2[1]
         checkout_year=Fechadiv2[0]
-        adultos = str(c[6])
-        #
+        adultos = '8'
+        #str(c[6])
+
+        print "Destino/Nombre Alojamiento: " + ss
+        print "Fecha de Check-in: %s" % fecha
+        print "Fecha de Check-out: %s" % Fechasal
         print "Adultos: %s" % adultos
 
         print "Cargando Datos...."
         #Actualizar la fecha programada de la consulta
-        if fecha_prog =='0000-00-00':
+        if fecha_inicio is None:
             sqllog = ("UPDATE SCR_CONSULTAS SET FECHA_PROGRA=? WHERE ID_CONSULTA=?")
             valor = [Fechasal, idconsulta]
             cursor.execute(sqllog, valor)
@@ -295,8 +317,10 @@ for c in resultado:
                         #print preci2
                         if preci2 is None:
                             precio = entrada.find("div", re.compile("totalPrice"))
+                            tipo = 1
                         else:
                             precio = preci2.find("b", re.compile("sr_gs_price"))
+                            tipo = 2
                         #print preci2
                                     
                         if precio is None:
@@ -316,21 +340,26 @@ for c in resultado:
                                 pre =u' '.join((prec)).encode('utf-8').strip()
                                 variable = True
                                 #pre =str(prec)
+                                #print pre
                                 l = 0
                                 Price = ""
                                 limit = len(pre)-5
+                                #print limit
                                 if limit>53:
                                     limit = len(pre)-9
                                 while l < len(pre):
                                     if pre[l].isdigit():
-                                        if l >= limit:
+                                        if l >= limit and tipo ==1:
                                             Price = Price + pre[l]
                                             #limit += 2
+                                        elif tipo == 2:
+                                            Price = Price + pre[l]
                                         l += 1
                                     else:
                                         if pre[l]=='.':
                                             Price = Price
                                         l += 1
+                                #print Price 
                     else:
                         prec = precio
                         #print prec
@@ -387,7 +416,7 @@ for c in resultado:
                         m -= 1
                     else:
                         Price = int(Price)
-                        Fecha = str(Fecha)
+                        Fecha = str(fecha)
                         Fechasal = str(Fechasal)
                         #se recorre la lista de hoteles 
                         a = 0
@@ -531,5 +560,9 @@ for c in resultado:
             cursor.commit()
             raise
     else:
+        sqllog = ("UPDATE SCR_CONSULTAS SET ESTADO=? WHERE ID_CONSULTA=?")
+        valor = [0, idconsulta]
+        cursor.execute(sqllog, valor)
+        cursor.commit()
         print "La consulta se ejecutara en %s dias" % str(dias.days)
 cnn.close()
