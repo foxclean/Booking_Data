@@ -123,8 +123,8 @@ for c in resultado:
         checkout_monthday=Fechadiv2[2]
         checkout_month=Fechadiv2[1]
         checkout_year=Fechadiv2[0]
-        adultos = '8'
-        #str(c[6])
+        adultos = str(c[6])
+        #
 
         print "Destino/Nombre Alojamiento: " + ss
         print "Fecha de Check-in: %s" % fecha
@@ -313,12 +313,15 @@ for c in resultado:
                     precio = entrada.find_next_sibling("b", re.compile("sr_gs_price")) 
                     #print precio      
                     if precio is None :
+                        #print "entre precio1"
                         preci2 = entrada.find("div", re.compile("sr_gs_rack_rate"))
                         #print preci2
                         if preci2 is None:
+                            #print "entre precio2"
                             precio = entrada.find("div", re.compile("totalPrice"))
                             tipo = 1
                         else:
+                            #print "entre precio3"
                             precio = preci2.find("b", re.compile("sr_gs_price"))
                             tipo = 2
                         #print preci2
@@ -376,6 +379,7 @@ for c in resultado:
                                 if pre[l]=='.':
                                     Price = Price
                                 l += 1
+                    #print Price
                     a = 0   
                     if puntuacion != 0:
                         #print puntuacion
@@ -454,78 +458,119 @@ for c in resultado:
                         a = 0
                         b = 1
                         lenlist=len(listhotlcom)            
-                        for s in listhotlcom:
-                            shotl =s.replace(' ','')
-                            shotl = u' '.join((shotl)).encode('utf-8').strip()
-                            #print shotl
-                            hotels = Hotel.replace(' ','')
-                            hotels = u' '.join((hotels)).encode('utf-8').strip()
-                            #print hotels
-                            hoteltex = u' '.join((Hotel)).encode('utf-8')
-                            if hotels == shotl:
-                                idhotel = listhotlcomid[a]
-                                print 'comparando hoteles de la competencia'
-                                #Ingresar a una lista los hoteles
-                                sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-                                valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]
-                                cursor.execute(sqlhotlcom,valorcom)
-                                cursor.commit()
-                                #print sqlhotlcom
-                                #print valorcom
-                                cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
-                               
-                                fechahora = fechaahora()
-                                sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
-                                valor = [idconsulta, fechahora,'Ingresando Anuncio de los hoteles de la competencia','339-342', url, cadena, 2 ]
-                                cursor.execute(sqllog, valor)
-                                cursor.commit()
-                                    
-                                #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
-
-                                break
-                            elif b == lenlist:
-                                print 'ingresando hotel de la competenicia'
-                                sqlhotl = ("INSERT INTO SCR_COMPETENCIA (TITULO, ID_PORTAL) VALUES (?, ?)")
-                                valor = [Hotel, 2]      
-                                cursor.execute(sqlhotl,valor)
-                                cursor.commit()
-                                #print sqlhotl
-                                #print valor
+                        if lenlist==0 or listhotlcom is None:
+                            print 'ingresando hotel de la competenicia'
+                            sqlhotl = ("INSERT INTO SCR_COMPETENCIA (TITULO, ID_PORTAL) VALUES (?, ?)")
+                            valor = [Hotel, 2]      
+                            cursor.execute(sqlhotl,valor)
+                            cursor.commit()
+                            #print sqlhotl
+                            #print valor
                     
-                                fechahora = fechaahora()
-                                sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
-                                valor = [idconsulta, fechahora,'Ingresando nuevo hotel de la competencia','352-355', url, '', 2 ]
-                                cursor.execute(sqllog, valor)
-                                cursor.commit()
+                            fechahora = fechaahora()
+                            sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                            valor = [idconsulta, fechahora,'Ingresando nuevo hotel de la competencia','352-355', url, '', 2 ]
+                            cursor.execute(sqllog, valor)
+                            cursor.commit()
                 
-                                sqltop = ("SELECT TOP 1 ID_COMPETENCIA FROM SCR_COMPETENCIA WHERE ID_PORTAL=2 ORDER BY ID_COMPETENCIA DESC")
-                                cursor.execute(sqltop)
-                                resulth = cursor.fetchone()
-                                idhotel = resulth[0]
-                                #print idhotel
+                            sqltop = ("SELECT TOP 1 ID_COMPETENCIA FROM SCR_COMPETENCIA WHERE ID_PORTAL=2 ORDER BY ID_COMPETENCIA DESC")
+                            cursor.execute(sqltop)
+                            resulth = cursor.fetchone()
+                            idhotel = resulth[0]
+                            #print idhotel
 
-                                fechahora = fechaahora()
-                                sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
-                                valor = [idconsulta, fechahora,'Seleccionando el ultimo hotel ingresado de Booking','365-368', url, '', 2 ]
-                                cursor.execute(sqllog, valor)
-                                cursor.commit()
+                            fechahora = fechaahora()
+                            sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                            valor = [idconsulta, fechahora,'Seleccionando el ultimo hotel ingresado de Booking','365-368', url, '', 2 ]
+                            cursor.execute(sqllog, valor)
+                            cursor.commit()
 
-                                sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-                                valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]  
-                                cursor.execute(sqlhotlcom,valorcom)
-                                cursor.commit()
+                            sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                            valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]  
+                            cursor.execute(sqlhotlcom,valorcom)
+                            cursor.commit()
+                            
+                            cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
+                            fechahora = fechaahora()
+                            sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                            valor = [idconsulta, fechahora,'Ingresando anuncio de hotel de la competencia','377-380', url, cadena, 2 ]
+                            cursor.execute(sqllog, valor)
+                            cursor.commit()
+                            #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
+                            break
+                        else:
+                            for s in listhotlcom:
+                                shotl =s.replace(' ','')
+                                shotl = u' '.join((shotl)).encode('utf-8').strip()
+                                #print shotl
+                                hotels = Hotel.replace(' ','')
+                                hotels = u' '.join((hotels)).encode('utf-8').strip()
+                                #print hotels
+                                hoteltex = u' '.join((Hotel)).encode('utf-8')
+                                if hotels == shotl:
+                                    idhotel = listhotlcomid[a]
+                                    print 'comparando hoteles de la competencia'
+                                    #Ingresar a una lista los hoteles
+                                    sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                                    valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]
+                                    cursor.execute(sqlhotlcom,valorcom)
+                                    cursor.commit()
+                                    #print sqlhotlcom
+                                    #print valorcom
+                                    cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
+                                   
+                                    fechahora = fechaahora()
+                                    sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                                    valor = [idconsulta, fechahora,'Ingresando Anuncio de los hoteles de la competencia','339-342', url, cadena, 2 ]
+                                    cursor.execute(sqllog, valor)
+                                    cursor.commit()
+                                        
+                                    #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
 
-                                cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
-                                fechahora = fechaahora()
-                                sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
-                                valor = [idconsulta, fechahora,'Ingresando anuncio de hotel de la competencia','377-380', url, cadena, 2 ]
-                                cursor.execute(sqllog, valor)
-                                cursor.commit()
-                                #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
-                                break
-                            a += 1
-                            b += 1
-                            # Se imprime el resultado de la busqueda
+                                    break
+                                elif b == lenlist:
+                                    print 'ingresando hotel de la competenicia'
+                                    sqlhotl = ("INSERT INTO SCR_COMPETENCIA (TITULO, ID_PORTAL) VALUES (?, ?)")
+                                    valor = [Hotel, 2]      
+                                    cursor.execute(sqlhotl,valor)
+                                    cursor.commit()
+                                    #print sqlhotl
+                                    #print valor
+                        
+                                    fechahora = fechaahora()
+                                    sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                                    valor = [idconsulta, fechahora,'Ingresando nuevo hotel de la competencia','352-355', url, '', 2 ]
+                                    cursor.execute(sqllog, valor)
+                                    cursor.commit()
+                
+                                    sqltop = ("SELECT TOP 1 ID_COMPETENCIA FROM SCR_COMPETENCIA WHERE ID_PORTAL=2 ORDER BY ID_COMPETENCIA DESC")
+                                    cursor.execute(sqltop)
+                                    resulth = cursor.fetchone()
+                                    idhotel = resulth[0]
+                                    #print idhotel
+
+                                    fechahora = fechaahora()
+                                    sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                                    valor = [idconsulta, fechahora,'Seleccionando el ultimo hotel ingresado de Booking','365-368', url, '', 2 ]
+                                    cursor.execute(sqllog, valor)
+                                    cursor.commit()
+
+                                    sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                                    valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]  
+                                    cursor.execute(sqlhotlcom,valorcom)
+                                    cursor.commit()
+
+                                    cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
+                                    fechahora = fechaahora()
+                                    sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
+                                    valor = [idconsulta, fechahora,'Ingresando anuncio de hotel de la competencia','377-380', url, cadena, 2 ]
+                                    cursor.execute(sqllog, valor)
+                                    cursor.commit()
+                                    #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
+                                    break
+                                a += 1
+                                b += 1
+                                # Se imprime el resultado de la busqueda
                     
                
   
