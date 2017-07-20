@@ -124,7 +124,10 @@ for c in resultado:
         checkout_month=Fechadiv2[1]
         checkout_year=Fechadiv2[0]
         adultos = str(c[6])
+<<<<<<< HEAD
         #
+=======
+>>>>>>> b0cb13e4372aaf0ac26177d3414571ecf24b1bbf
 
         print "Destino/Nombre Alojamiento: " + ss
         print "Fecha de Check-in: %s" % fecha
