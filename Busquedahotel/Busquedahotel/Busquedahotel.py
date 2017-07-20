@@ -123,8 +123,7 @@ for c in resultado:
         checkout_monthday=Fechadiv2[2]
         checkout_month=Fechadiv2[1]
         checkout_year=Fechadiv2[0]
-        adultos = '8'
-        #str(c[6])
+        adultos = str(c[6])
 
         print "Destino/Nombre Alojamiento: " + ss
         print "Fecha de Check-in: %s" % fecha
