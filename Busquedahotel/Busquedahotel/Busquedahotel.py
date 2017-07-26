@@ -436,20 +436,20 @@ for c in resultado:
                                 idhotel = listhotlid[a]
                                 print 'Comparando Hoteles'
                                 #Ingresar dato en anunciantes hoteles
-                    
+                                in_precio = Price / c[10]
                                 sqlhotl = ("INSERT INTO SCR_ANUNCIANTES(ID_ANUNCIO, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-                                valorht = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]
+                                valorht = [idhotel, Fecha, Fechasal, m, 2, in_precio, idconsulta, puntuacion]
                                 cursor.execute(sqlhotl,valorht)
                                 cursor.commit()
 
-                                cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, Hotel, Price, puntuacion)
+                                cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, Hotel, in_precio, puntuacion)
                                 fechahora = fechaahora()
                                 sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
                                 valor = [idconsulta, fechahora,'Ingresando Anuncio de los hoteles a buscar','313-316', url, cadena, 1 ]
                                 cursor.execute(sqllog, valor)
                                 cursor.commit()
                             
-                                print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, Hotel, Price, puntuacion)
+                                print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, Hotel, in_precio, puntuacion)
                                 #m += 1
                                 break
                             a += 1
@@ -464,6 +464,7 @@ for c in resultado:
                             valor = [Hotel, 2]      
                             cursor.execute(sqlhotl,valor)
                             cursor.commit()
+                            in_precio = Price / c[10]
                             #print sqlhotl
                             #print valor
                     
@@ -486,17 +487,17 @@ for c in resultado:
                             cursor.commit()
 
                             sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-                            valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]  
+                            valorcom = [idhotel, Fecha, Fechasal, m, 2, in_precio, idconsulta, puntuacion]  
                             cursor.execute(sqlhotlcom,valorcom)
                             cursor.commit()
                             
-                            cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
+                            cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, in_precio, puntuacion) 
                             fechahora = fechaahora()
                             sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
                             valor = [idconsulta, fechahora,'Ingresando anuncio de hotel de la competencia','377-380', url, cadena, 2 ]
                             cursor.execute(sqllog, valor)
                             cursor.commit()
-                            #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
+                            #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, in_precio, puntuacion)
                             break
                         else:
                             for s in listhotlcom:
@@ -509,15 +510,16 @@ for c in resultado:
                                 hoteltex = u' '.join((Hotel)).encode('utf-8')
                                 if hotels == shotl:
                                     idhotel = listhotlcomid[a]
+                                    in_precio = Price / c[10]
                                     print 'comparando hoteles de la competencia'
                                     #Ingresar a una lista los hoteles
                                     sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-                                    valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]
+                                    valorcom = [idhotel, Fecha, Fechasal, m, 2, in_precio, idconsulta, puntuacion]
                                     cursor.execute(sqlhotlcom,valorcom)
                                     cursor.commit()
                                     #print sqlhotlcom
                                     #print valorcom
-                                    cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
+                                    cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, in_precio, puntuacion) 
                                    
                                     fechahora = fechaahora()
                                     sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
@@ -525,7 +527,7 @@ for c in resultado:
                                     cursor.execute(sqllog, valor)
                                     cursor.commit()
                                         
-                                    #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
+                                    #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, in_precio, puntuacion)
 
                                     break
                                 elif b == lenlist:
@@ -556,17 +558,17 @@ for c in resultado:
                                     cursor.commit()
 
                                     sqlhotlcom = ("INSERT INTO SCR_ANUNCIANTES (ID_COMPETENCIA, FECHAI, FECHAF, ORDEN, ID_PORTAL, PRECIO, ID_CONSULTA, RATIO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-                                    valorcom = [idhotel, Fecha, Fechasal, m, 2, Price, idconsulta, puntuacion]  
+                                    valorcom = [idhotel, Fecha, Fechasal, m, 2, in_precio, idconsulta, puntuacion]  
                                     cursor.execute(sqlhotlcom,valorcom)
                                     cursor.commit()
 
-                                    cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, Price, puntuacion) 
+                                    cadena = "posicion: %d Hotel: %s Precio:%s Puntuacion:%s " %(m, hoteltex, in_precio, puntuacion) 
                                     fechahora = fechaahora()
                                     sqllog = ("INSERT INTO SCR_LOG (ID_CONSULTA, FECHA, MENSAJE, LINEA_COD, URL, DETALLE, TIPO) VALUES (?, ?, ?, ?, ?, ?, ?)")
                                     valor = [idconsulta, fechahora,'Ingresando anuncio de hotel de la competencia','377-380', url, cadena, 2 ]
                                     cursor.execute(sqllog, valor)
                                     cursor.commit()
-                                    #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, Price, puntuacion)
+                                    #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, in_precio, puntuacion)
                                     break
                                 a += 1
                                 b += 1
