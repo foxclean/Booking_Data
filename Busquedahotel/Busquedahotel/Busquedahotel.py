@@ -185,18 +185,17 @@ for c in resultado:
         try:
             result = souporder.h1.string
             print result
-            resul = result.split()
+            resul = re.findall('\\d+',result)
             i = 0
             totalhotel = 0
-            variable = True
-            #Obtener la cantidad de Hoteles encontrados en el resultado
-            while variable == True:
-                if resul[i].isdigit():
-                    totalhotel = resul[i]
-                    variable = False
-                else:
-                    i += 1
-            totalhotel = int(totalhotel)
+            text_total = None
+            #---
+            if(len(resul) == 2)
+                text_total = resul[0] + resul[1]
+            else:
+                text_total = resul[0]
+            #---           
+            totalhotel = int(text_total)
 
             canthotel = 0
 
@@ -526,7 +525,7 @@ for c in resultado:
                                     valor = [idconsulta, fechahora,'Ingresando Anuncio de los hoteles de la competencia','339-342', url, cadena, 2 ]
                                     cursor.execute(sqllog, valor)
                                     cursor.commit()
-                                        
+                                         
                                     #print "posicion: %d \n Hotel: %s \n Precio:%s \n Puntuacion:%s \n *******" %(m, hoteltex, in_precio, puntuacion)
 
                                     break
@@ -545,7 +544,7 @@ for c in resultado:
                                     cursor.execute(sqllog, valor)
                                     cursor.commit()
                 
-                                    sqltop = ("SELECT TOP 1 ID_COMPETENCIA FROM SCR_COMPETENCIA WHERE ID_PORTAL=2 ORDER BY ID_COMPETENCIA DESC")
+                                    sqltop = ("SELECT TOP 1 ID_COMPETENCIA FROM SCR_COMPETENCIA WHERE ID_POTRAL=2 ORDER BY ID_COMPETENCIA DESC")
                                     cursor.execute(sqltop)
                                     resulth = cursor.fetchone()
                                     idhotel = resulth[0]
