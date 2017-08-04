@@ -190,7 +190,7 @@ for c in resultado:
             totalhotel = 0
             text_total = None
             #---
-            if(len(resul) == 2)
+            if(len(resul) == 2):
                 text_total = resul[0] + resul[1]
             else:
                 text_total = resul[0]
