@@ -544,7 +544,7 @@ for c in resultado:
                                     cursor.execute(sqllog, valor)
                                     cursor.commit()
                 
-                                    sqltop = ("SELECT TOP 1 ID_COMPETENCIA FROM SCR_COMPETENCIA WHERE ID_POTRAL=2 ORDER BY ID_COMPETENCIA DESC")
+                                    sqltop = ("SELECT TOP 1 ID_COMPETENCIA FROM SCR_COMPETENCIA WHERE ID_PORTAL=2 ORDER BY ID_COMPETENCIA DESC")
                                     cursor.execute(sqltop)
                                     resulth = cursor.fetchone()
                                     idhotel = resulth[0]
